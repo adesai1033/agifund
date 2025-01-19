@@ -356,4 +356,4 @@ def get_intraday_data(symbol, api_key, output_file, days=7):
 
 # Example usage:
 api_key = "B8MJERYXGJNMHAON"
-get_intraday_data("NVDA", api_key, "NVDA_DATA.json", days=7)
+get_intraday_data("TSLA", api_key, "TSLA_DATA.json", days=7)

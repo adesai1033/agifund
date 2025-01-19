@@ -1,5 +1,0 @@
-So econ_data_processor.py is the file that takes in "Economic_EVENTS" data and outputs a list of files
-that aggregate to tracking what dates to consider when letting the language model perform its analysis of indicator to 
-price movement.
-stockandtechnicals.py is where we put the ticker we are interested in and let it extract all of the relevant
-data needed for a technical analysis
