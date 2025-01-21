@@ -1,118 +1,113 @@
-# Stock Analysis with Market Event Correlation
+# AGI Fund Technical Analysis Pipeline
 
-## Project Overview
-This project analyzes stock performance while accounting for significant market-wide events. It uses a two-stage approach:
-1. Identifies and catalogs major market-moving events
-2. Analyzes technical indicators while considering these events as potential outliers
+A sophisticated pipeline for analyzing stock market data and economic indicators using technical analysis and machine learning.
+
+## Overview
+
+This project implements a three-stage pipeline for comprehensive market analysis:
+
+1. **Data Collection & Technical Analysis** (`stock_technicals_current.py`)
+   - Fetches historical stock data and calculates technical indicators
+   - Supports multiple timeframes and granularities
+   - Includes a wide range of technical indicators (Moving Averages, Momentum, Volatility, Volume)
+   - Creates organized directory structure for data storage
+
+2. **Economic Event Analysis** (`econ_formatting.py`)
+   - Analyzes economic indicators and events
+   - Uses AI to identify significant market-moving events
+   - Calculates event severity and potential market impact
+   - Generates comprehensive economic analysis reports
+
+3. **Technical Analysis Prompt Generation** (`prompt_creator.py`)
+   - Creates sophisticated analysis prompts combining technical and fundamental data
+   - Integrates market events with technical indicators
+   - Generates structured analysis templates for consistent evaluation
+   - Supports multiple technical indicators and timeframes
 
 ## Directory Structure
+
 ```
 .
-├── Economic_EVENTS/              # Economic indicator data
-│   ├── federal_funds_rate.json
-│   ├── treasury_yield.json
-│   ├── inflation.json
-│   ├── unemployment.json
-│   ├── retail_sales.json
-│   ├── nonfarm_payroll.json
+├── Economic_EVENTS/           # Economic indicator data
+│   ├── cpi.json
 │   ├── gdp.json
-│   └── durables.json
-│
-├── AMD_DATA/                     # Stock-specific data
-│   ├── stock_prices.json        # Raw stock price data
-│   ├── SMA_daily.json          # Simple Moving Average data
-│   ├── EMA_daily.json          # Exponential Moving Average data
-│   ├── MACD_daily.json         # MACD indicator data
-│   ├── ADX_daily.json          # Average Directional Index data
-│   └── WMA_daily.json          # Weighted Moving Average data
-│
-├── date_organizer.py            # Processes economic events and identifies market-moving dates
-├── market_date_processor.py     # Creates analysis prompts considering market events
-├── analysis_prompt.json         # Generated structured analysis prompt
-├── analysis_prompt.txt          # Human-readable analysis prompt
-├── market_moving_dates.txt      # List of significant market dates
-├── economic_analysis.txt        # Detailed economic event analysis
-├── economic_events.json         # Structured economic event data
-└── .env                        # API keys and configuration
+│   └── ...
+├── [TICKER]_HISTORICAL/      # Stock-specific data directories
+│   ├── YYYY_MM/             # Monthly data organization
+│   │   ├── TICKER_DATA.json # Price data
+│   │   ├── sma.json        # Technical indicators
+│   │   └── ...
+├── stock_technicals_current.py
+├── econ_formatting.py
+├── prompt_creator.py
+└── requirements.txt
 ```
 
-## Key Files and Their Functions
+## Features
 
-### Core Processing Files
-- `date_organizer.py`: 
-  - Analyzes economic event data
-  - Identifies significant market-moving dates
-  - Uses o1-mini model for initial analysis
-  - Outputs: economic_analysis.txt, economic_events.json, market_moving_dates.txt
+### Technical Analysis
+- Support for multiple technical indicators:
+  - Moving Averages (SMA, EMA, WMA, DEMA, TEMA, TRIMA, KAMA, MAMA)
+  - Momentum Indicators (MACD, RSI, Stochastic, ADX)
+  - Volatility Indicators (Bollinger Bands, ATR)
+  - Volume Indicators (OBV, ADOSC)
+- Customizable timeframes and intervals
+- Automated data organization by time periods
 
-- `market_date_processor.py`:
-  - Creates sophisticated analysis prompts
-  - Integrates market events with technical analysis
-  - Handles both JSON and TXT data formats
-  - Outputs: analysis_prompt.json, analysis_prompt.txt
+### Economic Analysis
+- Processing of major economic indicators:
+  - GDP
+  - Inflation
+  - Employment data
+  - Interest rates
+  - Retail sales
+- AI-powered event significance analysis
+- Market impact assessment
+- Comprehensive reporting system
 
-### Data Files
-- `Economic_EVENTS/*.json`:
-  - Contains historical economic indicator data
-  - Each file represents a different economic metric
-  - Used to identify market-moving events
+### Prompt Generation
+- Integration of technical and fundamental analysis
+- Customizable analysis templates
+- Support for multiple analysis approaches
+- Structured output for consistent evaluation
 
-- `AMD_DATA/*.json`:
-  - Stock-specific technical indicators
-  - Price history and various technical analysis data
-  - Used for detailed stock analysis
+## Usage
 
-### Output Files
-- `market_moving_dates.txt`: List of dates with significant market impact
-- `economic_analysis.txt`: Detailed analysis of economic events
-- `economic_events.json`: Structured data of economic events
-- `analysis_prompt.json`: Machine-readable analysis template
-- `analysis_prompt.txt`: Human-readable analysis template
+1. Data Collection:
+```python
+python stock_technicals_current.py
+```
 
-## Configuration
-- `.env` file should contain:
-  ```
-  OPENAI_API_KEY=your_openai_key_here
-  Alpha Vantage API key goes into "stockandtechnicals.py" at the bottom
-  ```
+2. Economic Analysis:
+```python
+python econ_formatting.py
+```
 
-## Usage Flow
-1. Run `date_organizer.py` first to process economic events
-2. Run `market_date_processor.py` to create analysis prompts
-3. Use generated prompts for stock-specific analysis
+3. Generate Analysis Prompts:
+```python
+python prompt_creator.py
+```
 
-## Dependencies
-- OpenAI's o1-mini model for data analysis
-- Alpha Vantage API for market data
-- Python packages:
-  - langchain
-  - pandas
-  - python-dotenv
-  - langgraph
+## Requirements
 
-## Data Formats
-- Stock data: JSON format
-- Technical indicators: JSON or TXT format
-- Economic events: JSON format
-- Generated analysis: Both JSON and TXT formats
+- Python 3.8+
+- Required packages listed in `requirements.txt`
+- Alpha Vantage API key for data collection
 
-## Important Notes
-- Always run date_organizer.py before market_date_processor.py
-- Keep API keys secure in .env file
-- Ensure all data files follow the expected format
-- Check economic_analysis.log for processing warnings and errors
+## Output Files
 
-## Future Development
-- Add parallel processing for multiple stocks
-- Implement real-time data updates
-- Enhance market event correlation analysis
-- Add more technical indicators
+The pipeline generates several output files:
+- `economic_analysis.txt`: Detailed economic event analysis
+- `economic_events.json`: Structured economic data
+- `major_market_events.txt`: Significant market events analysis
+- `market_moving_dates.txt`: Key dates affecting market movements
+- `analysis_prompt.json`: Generated analysis prompts
+- `analysis_prompt.txt`: Human-readable analysis templates
 
 ## Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
 
-## Contact
-[Your contact information here]
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
