@@ -1,0 +1,7 @@
+{
+    "event": "subscribed",
+    "feed": "ticker",
+    "product_ids": [
+        "PI_XBTUSD"
+    ]
+}
