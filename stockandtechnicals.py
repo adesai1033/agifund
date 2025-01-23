@@ -3,6 +3,10 @@ import json
 from datetime import datetime, timedelta
 import time
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 def get_daily_price_history(symbol, api_key, lookback_days=None):
     """Helper function to get daily price history"""
@@ -355,5 +359,8 @@ def get_intraday_data(symbol, api_key, output_file, days=7):
         print(f"Error: {str(e)}")
 
 # Example usage:
-api_key = "B8MJERYXGJNMHAON"
-get_intraday_data("TSLA", api_key, "TSLA_DATA.json", days=7)
+if __name__ == "__main__":
+    api_key = os.getenv('ALPHA_VANTAGE_API_KEY')
+    if not api_key:
+        raise ValueError("ALPHA_VANTAGE_API_KEY not found in environment variables")
+    get_intraday_data("TSLA", api_key, "TSLA_DATA.json", days=7)

@@ -4,6 +4,10 @@ from datetime import datetime, timedelta, date
 import time
 import os
 import calendar
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 def get_month_dates(year, month):
     """Helper function to get start and end dates for a given month"""
@@ -387,5 +391,7 @@ def get_monthly_data(symbol, api_key, base_dir, interval='5min'):
 
 # Example usage:
 if __name__ == "__main__":
-    api_key = "B8MJERYXGJNMHAON"  # Replace with your Alpha Vantage API key
+    api_key = os.getenv('ALPHA_VANTAGE_API_KEY')
+    if not api_key:
+        raise ValueError("ALPHA_VANTAGE_API_KEY not found in environment variables")
     get_monthly_data("NVDA", api_key, "NVDA_HISTORICAL", interval='5min') 
