@@ -1,0 +1,90 @@
+1. Data Parsing and Preparation
+Reasoning Trace:
+
+Parse the provided <stock_data> and <indicator_data> to extract relevant columns (e.g., date, price, indicator values).
+
+Ensure the data is aligned chronologically and matches the specified <interval> (e.g., daily, hourly).
+
+Identify any missing or inconsistent data points and decide how to handle them (e.g., interpolation, exclusion).
+
+2. Exploratory Data Analysis (EDA)
+Reasoning Trace:
+
+Calculate basic statistics (mean, median, standard deviation) for both stock prices and the technical indicator.
+
+Plot the stock price and indicator values over time to visually identify trends, patterns, or anomalies.
+
+Check for outliers or extreme values in the indicator data that might skew analysis.
+
+3. Correlation Analysis
+Reasoning Trace:
+
+Compute statistical correlation (e.g., Pearson or Spearman) between the indicator and stock price movements.
+
+Identify periods where the indicator and price movements align or diverge.
+
+Explore lagged correlations to determine if the indicator leads or lags price changes.
+
+4. Pattern and Threshold Identification
+Reasoning Trace:
+
+Identify common thresholds (e.g., overbought/oversold levels) for the indicator and assess their predictive power.
+
+Look for recurring patterns (e.g., crossovers, divergences) that precede price movements.
+
+Test whether these patterns hold consistently across the dataset or only in specific market conditions.
+
+5. Lead/Lag Effects and Predictive Signals
+Reasoning Trace:
+
+Analyze whether the indicator provides early signals (lead) or confirms price movements (lag).
+
+Test the indicator’s performance in different market phases (e.g., trending vs. ranging markets).
+
+Evaluate if the indicator works better for short-term vs. long-term predictions.
+
+6. Counterarguments and Limitations
+Reasoning Trace:
+
+Identify instances where the indicator fails to predict price movements or provides false signals.
+
+Consider potential biases in the data (e.g., survivorship bias, small sample size).
+
+Highlight any limitations in the dataset (e.g., insufficient time range, lack of volatility).
+
+7. Synergies with Other Signals
+Reasoning Trace:
+
+Hypothesize how the indicator could complement other technical indicators (e.g., moving averages, RSI).
+
+Suggest potential combinations that might improve predictive accuracy (e.g., using the indicator as a confirmation tool).
+
+Test these hypotheses using the provided data, if possible.
+
+8. Validation and Evidence-Based Conclusions
+Reasoning Trace:
+
+For each insight or conclusion, reference specific data points or patterns that support it.
+
+Use statistical measures (e.g., accuracy, precision) to validate the indicator’s predictive power.
+
+Ensure conclusions are grounded in the data and avoid overgeneralization.
+
+9. Summary and Trader Applications
+Reasoning Trace:
+
+Synthesize the most actionable insights for traders (e.g., specific thresholds, patterns, or combinations).
+
+Highlight the indicator’s strengths and weaknesses based on the analysis.
+
+Provide clear, concise recommendations for incorporating the indicator into a trading strategy.
+
+10. Disclaimer and Ethical Considerations
+Reasoning Trace:
+
+Emphasize that the analysis is based solely on the provided data and may not account for all market variables.
+
+Clearly state that the analysis is not financial advice and should not be used as the sole basis for trading decisions.
+
+Encourage traders to conduct further research and consult professionals before making investment decisions.
+
