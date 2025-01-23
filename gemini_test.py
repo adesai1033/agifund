@@ -16,7 +16,7 @@ generation_config = {
 }
 
 model = genai.GenerativeModel(
-  model_name="gemini-pro",  # Changed to use the stable model name
+  model_name="gemini-2.0-flash-thinking-exp-01-21",  # Changed to use the stable model name
   generation_config=generation_config,
 )
 
