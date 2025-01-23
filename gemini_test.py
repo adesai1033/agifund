@@ -5,6 +5,9 @@ warnings.filterwarnings("ignore", category=urllib3.exceptions.NotOpenSSLWarning)
 import google.generativeai as genai
 from config import GOOGLE_API_KEY, validate_credentials
 
+# Configure the Gemini API with your key
+genai.configure(api_key=GOOGLE_API_KEY)
+
 generation_config = {
   "temperature": 0.7,
   "top_p": 0.95,
@@ -13,7 +16,7 @@ generation_config = {
 }
 
 model = genai.GenerativeModel(
-  model_name="gemini-2.0-flash-thinking-exp-01-21",
+  model_name="gemini-pro",  # Changed to use the stable model name
   generation_config=generation_config,
 )
 
