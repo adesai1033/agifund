@@ -6,7 +6,10 @@ import pandas as pd
 from langgraph.graph import Graph, StateGraph
 from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
+import argparse
 
+#reasoning model prompt in trello
+# use suggested reasoning traces prompt for non reasoning models
 load_dotenv()
 
 # Base template for the analysis

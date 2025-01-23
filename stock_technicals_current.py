@@ -391,7 +391,7 @@ def get_monthly_data(symbol, api_key, base_dir, interval='5min'):
 
 # Example usage:
 if __name__ == "__main__":
-    api_key = os.getenv('ALPHA_VANTAGE_API_KEY')
+    api_key = os.getenv('ALPHA_VANTAGE_KEY')
     if not api_key:
-        raise ValueError("ALPHA_VANTAGE_API_KEY not found in environment variables")
+        raise ValueError("ALPHA_VANTAGE_KEY not found in environment variables")
     get_monthly_data("NVDA", api_key, "NVDA_HISTORICAL", interval='5min') 

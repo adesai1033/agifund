@@ -360,7 +360,7 @@ def get_intraday_data(symbol, api_key, output_file, days=7):
 
 # Example usage:
 if __name__ == "__main__":
-    api_key = os.getenv('ALPHA_VANTAGE_API_KEY')
+    api_key = os.getenv('ALPHA_VANTAGE_KEY')
     if not api_key:
-        raise ValueError("ALPHA_VANTAGE_API_KEY not found in environment variables")
+        raise ValueError("ALPHA_VANTAGE_KEY not found in environment variables")
     get_intraday_data("TSLA", api_key, "TSLA_DATA.json", days=7)
