@@ -17,6 +17,9 @@ ALPHA_VANTAGE_KEY = os.getenv('ALPHA_VANTAGE_KEY')
 # Polygon.io credentials (if you're using it)
 POLYGON_API_KEY = os.getenv('POLYGON_API_KEY')
 
+# Deepseek credentials
+DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
+
 # You can group related credentials into dictionaries if needed
 google_credentials = {
     'api_key': GOOGLE_API_KEY,
@@ -25,7 +28,7 @@ google_credentials = {
 
 # Optional: Function to validate that required keys are present
 def validate_credentials():
-    required_keys = ['GOOGLE_API_KEY', 'GOOGLE_PROJECT_ID']  # Add keys as needed
+    required_keys = ['GOOGLE_API_KEY', 'GOOGLE_PROJECT_ID', 'DEEPSEEK_API_KEY']  # Add keys as needed
     missing_keys = []
     
     for key in required_keys:
