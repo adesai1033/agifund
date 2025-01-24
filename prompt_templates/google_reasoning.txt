@@ -23,19 +23,19 @@ Comprehensive Analysis: While seeking novel insights, ensure your analysis is co
 <contextdump>CONTEXT DUMP<contextdump>
 Data Provided:
 
-<stock_data>{{STOCK_DATA}}</stock_data>: This contains candle data for the specified stock, including Open, High, Low, Close, and Volume for each time interval.
+<stock_data>{STOCK_DATA}</stock_data>: This contains candle data for the specified stock, including Open, High, Low, Close, and Volume for each time interval.
 
-<indicator_data>{{INDICATOR_DATA}}</indicator_data>: This includes the calculated values of the specified technical indicator for each corresponding time interval in the stock data.
+<indicator_data>{INDICATOR_DATA}</indicator_data>: This includes the calculated values of the specified technical indicator for each corresponding time interval in the stock data.
 
-<tech_indicator>{{TECH_INDICATOR}}</tech_indicator>: Specifies the name of the technical indicator being analyzed.
+<tech_indicator>{TECH_INDICATOR}</tech_indicator>: Specifies the name of the technical indicator being analyzed.
 
-<ticker>{{TICKER}}</ticker>: Indicates the stock ticker symbol.
+<ticker>{TICKER}</ticker>: Indicates the stock ticker symbol.
 
-<period_start>{{PERIOD_START}}</period_start>: Defines the starting date for the analysis period.
+<period_start>{PERIOD_START}</period_start>: Defines the starting date for the analysis period.
 
-<period_end>{{PERIOD_END}}</period_end>: Defines the ending date for the analysis period.
+<period_end>{PERIOD_END}</period_end>: Defines the ending date for the analysis period.
 
-<interval>{{INTERVAL}}</interval>: Specifies the time interval of the data (e.g., daily, hourly).
+<interval>{INTERVAL}</interval>: Specifies the time interval of the data (e.g., daily, hourly).
 
 Analysis Steps within <detailed_examination>:
 

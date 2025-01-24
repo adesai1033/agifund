@@ -13,12 +13,12 @@ Data & Task
 
 Proceed with the analysis using only this data:
 
-<stock_data>{{STICK_DATA}}</stock_data>
-<indicator_data>{{INDICATOR_DATA}}</indicator_data>
-<tech_indicator>{{TECH_INDICATOR}}</tech_indicator>
-<ticker>{{TICKER}}</ticker>
+<stock_data>{STOCK_DATA}</stock_data>
+<indicator_data>{INDICATOR_DATA}</indicator_data>
+<tech_indicator>{TECH_INDICATOR}</tech_indicator>
+<ticker>{TICKER}</ticker>
 
-Objective: Analyze how <tech_indicator>{{TECH_INDICATOR}}</tech_indicator> influences/predicts price movements for <ticker>{{TICKER}}</ticker> between <period_start>{{PERIOD_START}}</period_start> and <period_end>{{PERIOD_END}}</period_end> at <interval>{{INTERVAL}}</interval> intervals.
+Objective: Analyze how <tech_indicator>{TECH_INDICATOR}</tech_indicator> influences/predicts price movements for <ticker>{TICKER}</ticker> between <period_start>{PERIOD_START}</period_start> and <period_end>{PERIOD_END}</period_end> at <interval>{INTERVAL}</interval> intervals.
 
 Structured Analysis Workflow
 

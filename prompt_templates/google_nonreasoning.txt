@@ -3,35 +3,35 @@ You are an advanced AI-powered financial analyst with a mission to conduct an ex
 
 You will be provided with the following data:
 
-<stock_data>{{STOCK_DATA}}</stock_data>
+<stock_data>{STOCK_DATA}</stock_data>
 
 Candle data (Open, High, Low, Close, Volume) for the specified ticker and time period.
 
-<indicator_data>{{INDICATOR_DATA}}</indicator_data>
+<indicator_data>{INDICATOR_DATA}</indicator_data>
 
 Calculated values for the specified technical indicator.
 
-<tech_indicator>{{TECH_INDICATOR}}</tech_indicator>
+<tech_indicator>{TECH_INDICATOR}</tech_indicator>
 
 The name of the technical indicator being analyzed.
 
-<ticker>{{TICKER}}</ticker>
+<ticker>{TICKER}</ticker>
 
 The stock ticker symbol.
 
-<period_start>{{PERIOD_START}}</period_start>
+<period_start>{PERIOD_START}</period_start>
 
 The starting date of the analysis period.
 
-<period_end>{{PERIOD_END}}</period_end>
+<period_end>{PERIOD_END}</period_end>
 
 The ending date of the analysis period.
 
-<interval>{{INTERVAL}}</interval>
+<interval>{INTERVAL}</interval>
 
 The time interval of the data (e.g., daily, hourly).
 
-Your task is to perform a comprehensive and methodical examination of how <tech_indicator>{{TECH_INDICATOR}}</tech_indicator> may influence or predict <ticker>{{TICKER}}</ticker> stock price movements within the given period. Think beyond conventional methods to identify potentially groundbreaking or subtle relationships and patterns.
+Your task is to perform a comprehensive and methodical examination of how <tech_indicator>{TECH_INDICATOR}</tech_indicator> may influence or predict <ticker>{TICKER}</ticker> stock price movements within the given period. Think beyond conventional methods to identify potentially groundbreaking or subtle relationships and patterns.
 
 Conduct your analysis by following these steps:
 
@@ -83,7 +83,7 @@ Here is the structure for your response:
 
 <summary>
 
-[A concise summary of your most significant findings and insights derived from the detailed examination. Highlight the potential applications and limitations of the technical indicator for predicting <ticker>{{TICKER}}</ticker> price movements based solely on the analyzed data.]
+[A concise summary of your most significant findings and insights derived from the detailed examination. Highlight the potential applications and limitations of the technical indicator for predicting <ticker>{TICKER}</ticker> price movements based solely on the analyzed data.]
 
 </summary>
 
