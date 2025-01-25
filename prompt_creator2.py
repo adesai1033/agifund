@@ -260,135 +260,121 @@ def str2bool(v):
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
-def main():
-    tech_indicators = [
-    "ht_trendmode", "ht_sine", "ht_phasor", "ht_dcphase", "ht_dcperiod",
-    "adosc", "obv", "midprice", "midpoint", "bbands", "trange", "natr",
-    "atr", "willr", "plus_dm", "minus_dm", "plus_di", "minus_di", "dx",
-    "ultosc", "trix", "mfi", "aroonosc", "aroon", "rocr", "roc", "cmo",
-    "cci", "bop", "mom", "ppo", "apo", "adxr", "adx", "stochrsi", "stochf",
-    "stoch", "rsi", "macd", "vwap", "t3", "mama", "kama", "trima", "tema",
-    "dema", "wma", "ema", "sma"
-    ]
-    
-    #claude sonnet 3.5 for nonreasoning.txt (system, user)
-    #reasoning.txt for o1 mini (system, user)
-    #gemini-exp-1206for google_nonreasoning.txt (1 prompt only)
-    #gemini-2.0-flash-thinking-exp-01-21 for google_reasoning.txt (1 prompt only)
-    models = ["claude-sonnet-3.5", "gemini-exp-1206", "gemini-2.0-flash-thinking-exp-01-21"]
-
-    parser = argparse.ArgumentParser(description="Input model, ticker, technical indicator, and path to prompt")
-    parser.add_argument("--model", type=str, required=True, help="The model to use. Options are: " + ", ".join(models))
-    parser.add_argument("--ticker", type=str, required=True, help="The stock ticker to analyze")
-    parser.add_argument("--indicator", type=str, required=True, help="The technical indicator to evaluate. Options are: " + ", ".join(tech_indicators))
-    parser.add_argument("--include_econ_events", type=str2bool, required=True, help="Indicates if market events should be included in the analysis")
-    args = parser.parse_args()
-
-    if args.model == "claude-sonnet-3.5":
-        if args.include_econ_events:
-            prompt_path = "prompts/nonreasoning_market.txt"
-            print(1)
+class PromptCreator:
+    def __init__(self):
+        self.tech_indicators = [
+            "ht_trendmode", "ht_sine", "ht_phasor", "ht_dcphase", "ht_dcperiod",
+            "adosc", "obv", "midprice", "midpoint", "bbands", "trange", "natr",
+            "atr", "willr", "plus_dm", "minus_dm", "plus_di", "minus_di", "dx",
+            "ultosc", "trix", "mfi", "aroonosc", "aroon", "rocr", "roc", "cmo",
+            "cci", "bop", "mom", "ppo", "apo", "adxr", "adx", "stochrsi", "stochf",
+            "stoch", "rsi", "macd", "vwap", "t3", "mama", "kama", "trima", "tema",
+            "dema", "wma", "ema", "sma"
+        ]
+        
+        self.models = ["o1-mini", "claude-sonnet-3.5", "gemini-exp-1206", "gemini-2.0-flash-thinking-exp-01-21"]
+        
+    def get_prompt_path(self, model: str, include_econ_events: bool) -> str:
+        """Get the appropriate prompt path based on model and economic events flag."""
+        if model == "claude-sonnet-3.5":
+            return "prompts/nonreasoning_market.txt" if include_econ_events else "prompts/nonreasoning.txt"
+        elif model == "o1-mini":
+            return "prompts/reasoning_market.txt" if include_econ_events else "prompts/reasoning.txt"
+        elif model == "gemini-exp-1206":
+            return "prompts/google_nonreasoning_market.txt" if include_econ_events else "prompts/google_nonreasoning.txt"
+        elif model == "gemini-2.0-flash-thinking-exp-01-21":
+            return "prompts/google_reasoning_market.txt" if include_econ_events else "prompts/google_reasoning.txt"
         else:
-            print(2)
-            prompt_path = "prompts/nonreasoning.txt"
+            raise ValueError(f"Invalid model: {model}")
 
-    elif args.model == "o1-mini":
-        if args.include_econ_events:
-            prompt_path = "prompts/reasoning_market.txt"
-        else:
-            prompt_path = "prompts/reasoning.txt"
-
-    elif args.model == "gemini-exp-1206":
-        if args.include_econ_events:
-            prompt_path = "prompts/google_nonreasoning_market.txt"
-        else:
-            prompt_path = "prompts/google_nonreasoning.txt"
-
-    elif args.model == "gemini-2.0-flash-thinking-exp-01-21":
-        if args.include_econ_events:
-            prompt_path = "prompts/google_reasoning_market.txt"
-        else:
-            prompt_path = "prompts/google_reasoning.txt"
+    def create_prompt(
+        self,
+        model: str,
+        ticker: str,
+        indicator: str,
+        include_econ_events: bool = False
+    ) -> Union[str, Tuple[str, str]]:
+        """
+        Create a filled prompt for the specified model and parameters.
+        Returns either a single prompt string (Gemini) or tuple of (user_prompt, system_prompt).
+        """
+        if indicator not in self.tech_indicators:
+            raise ValueError(f"Invalid indicator: {indicator}")
+        if model not in self.models:
+            raise ValueError(f"Invalid model: {model}")
             
-    else:
-        print("Invalid model")
-        exit(1)
-
-
-    # Read and process the prompt template
-    prompt = process_txtfile(prompt_path, args.model)
-
-    # Calculate max months based on model's context window
-    context_window = get_context_window(args.model)
-    max_months = calculate_max_months(context_window, args.indicator, prompt)
-    
-    print(f"\nMaximum months of data that can be analyzed: {max_months}")
-    
-    # Get date range from user after showing max months
-    while True:
-        try:
-            start_date = input("\nEnter start date (YYYY_MM format): ")
-            end_date = input("Enter end date (YYYY_MM format): ")
-            
-            if validate_date_range(start_date, end_date, max_months):
-                print("\nDate range is valid!")
-                # Store the validated dates for further processing
-                args.start_date = start_date
-                args.end_date = end_date
-                break
-            else:
-                print("\nPlease try again with a valid date range.")
+        prompt_path = self.get_prompt_path(model, include_econ_events)
+        prompt = process_txtfile(prompt_path, model)
+        
+        # Get max months and validate dates
+        context_window = get_context_window(model)
+        max_months = calculate_max_months(context_window, indicator, prompt)
+        
+        print(f"\nMaximum months of data that can be analyzed: {max_months}")
+        
+        # Get date range from user
+        while True:
+            try:
+                start_date = input("\nEnter start date (YYYY_MM format): ")
+                end_date = input("Enter end date (YYYY_MM format): ")
                 
-        except KeyboardInterrupt:
-            print("\nOperation cancelled by user.")
-            exit(1)
-            
-    # After successful date validation, create the filled prompt
-    filled_prompt = create_filled_prompt(
+                if validate_date_range(start_date, end_date, max_months):
+                    print("\nDate range is valid!")
+                    break
+                else:
+                    print("\nPlease try again with a valid date range.")
+                    
+            except KeyboardInterrupt:
+                print("\nOperation cancelled by user.")
+                raise
+        
+        # Create filled prompt
+        filled_prompt = create_filled_prompt(
+            ticker=ticker,
+            indicator=indicator,
+            start_date=start_date,
+            end_date=end_date,
+            model=model,
+            prompt=prompt,
+            include_econ_events=include_econ_events
+        )
+        
+        return filled_prompt
+
+def main():
+    parser = argparse.ArgumentParser(description='Create prompts for different models')
+    parser.add_argument('--model', type=str, required=True, 
+                       choices=["claude-sonnet-3.5", "o1-mini", "gemini-exp-1206", "gemini-2.0-flash-thinking-exp-01-21"],
+                       help='Model to use for prompt creation')
+    parser.add_argument('--ticker', type=str, required=True,
+                       help='Stock ticker symbol')
+    parser.add_argument('--indicator', type=str, required=True,
+                       help='Technical indicator to analyze')
+    parser.add_argument('--include_market_events', type=str2bool, default=False,
+                       help='Whether to include market events data')
+
+    args = parser.parse_args()
+    
+    # Create prompt creator instance
+    creator = PromptCreator()
+    
+    # Create prompt using the class
+    filled_prompt = creator.create_prompt(
+        model=args.model,
         ticker=args.ticker,
         indicator=args.indicator,
-        start_date=args.start_date,
-        end_date=args.end_date,
-        model=args.model,
-        prompt=prompt,
-        include_econ_events=args.include_econ_events
+        include_econ_events=args.include_market_events
     )
     
-    # Create output directory
-    output_dir = Path("prompts_filled")
-    output_dir.mkdir(exist_ok=True)
-    
-    # Save prompts based on model type
-    prompt_template_name = Path(prompt_path).stem
-    if args.model in ["claude-sonnet-3.5", "o1-mini"]:
-        filled_user_prompt, filled_system_prompt = filled_prompt
-        
-        # Save user prompt
-        user_file = output_dir / f"{args.ticker}_{args.indicator}_{args.start_date}_{args.end_date}_{prompt_template_name}_user.txt"
-        with open(user_file, 'w') as f:
-            f.write(filled_user_prompt)
-            
-        # Save system prompt
-        system_file = output_dir / f"{args.ticker}_{args.indicator}_{args.start_date}_{args.end_date}_{prompt_template_name}_system.txt"
-        with open(system_file, 'w') as f:
-            f.write(filled_system_prompt)
-            
-        print(f"\nGenerated prompts saved to:")
-        print(f"User prompt: {user_file}")
-        print(f"System prompt: {system_file}")
-    else:
-        # For Gemini models, save single prompt
-        output_file = output_dir / f"{args.ticker}_{args.indicator}_{args.start_date}_{args.end_date}_{prompt_template_name}.txt"
-        with open(output_file, 'w') as f:
-            f.write(filled_prompt)
-        print(f"\nGenerated prompt saved to: {output_file}")
+    print("\nFilled Prompt Created Successfully!")
+    return filled_prompt
 
 if __name__ == "__main__":
     '''
-    #
-    python prompt_creator2.py --model claude-sonnet-3.5 --ticker NVDA --indicator bop --include_econ_events False
-    python prompt_creator2.py --model o1-mini --ticker NVDA --indicator bop --include_econ_events False
-    python prompt_creator2.py --model gemini-exp-1206 --ticker NVDA --indicator bop --include_econ_events False
-    python prompt_creator2.py --model gemini-2.0-flash-thinking-exp-01-21 --ticker NVDA --indicator bop --include_econ_events False
-   '''
+    Example usage:
+    python prompt_creator2.py --model claude-sonnet-3.5 --ticker NVDA --indicator bop --include_market_events False
+    python prompt_creator2.py --model o1-mini --ticker NVDA --indicator bop --include_market_events False
+    python prompt_creator2.py --model gemini-exp-1206 --ticker NVDA --indicator bop --include_market_events False
+    python prompt_creator2.py --model gemini-2.0-flash-thinking-exp-01-21 --ticker NVDA --indicator bop --include_market_events False
+    '''
     main()

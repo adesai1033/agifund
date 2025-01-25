@@ -1,6 +1,4 @@
 import warnings
-import urllib3
-warnings.filterwarnings("ignore", category=urllib3.exceptions.NotOpenSSLWarning)
 
 import google.generativeai as genai
 from config import GOOGLE_API_KEY, validate_credentials
