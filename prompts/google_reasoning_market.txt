@@ -22,21 +22,14 @@ Comprehensive Analysis: While seeking novel insights, ensure your analysis is co
 <contextdump>CONTEXT DUMP<contextdump>
 Data Provided:
 
-<stock_data>{{STOCK_DATA}}</stock_data>: This contains candle data for the specified stock, including Open, High, Low, Close, and Volume for each time interval.
-
-<indicator_data>{{INDICATOR_DATA}}</indicator_data>: This includes the calculated values of the specified technical indicator for each corresponding time interval in the stock data.
-
-<tech_indicator>{{TECH_INDICATOR}}</tech_indicator>: Specifies the name of the technical indicator being analyzed.
-
-<ticker>{{TICKER}}</ticker>: Indicates the stock ticker symbol.
-
-<period_start>{{PERIOD_START}}</period_start>: Defines the starting date for the analysis period.
-
-<period_end>{{PERIOD_END}}</period_end>: Defines the ending date for the analysis period.
-
-<interval>{{INTERVAL}}</interval>: Specifies the time interval of the data (e.g., daily, hourly).
-
-<market_event_dates>{{MARKET_EVENT_DATES}}</market_event_dates>: This contains a list of dates that correspond to significant market-wide upturns or downturns within the analysis period.  *This data should be used to contextualize your analysis and understand if major market movements influence the indicator's behavior or predictive capabilities.*
+<stock_data>{STOCK_DATA}</stock_data>: This contains candle data for the specified stock, including Open, High, Low, Close, and Volume for each time interval.
+<indicator_data>{INDICATOR_DATA}</indicator_data>: This includes the calculated values of the specified technical indicator for each corresponding time interval in the stock data.
+<tech_indicator>{TECH_INDICATOR}</tech_indicator>: Specifies the name of the technical indicator being analyzed.
+<ticker>{TICKER}</ticker>: Indicates the stock ticker symbol.
+<period_start>{PERIOD_START}</period_start>: Defines the starting date for the analysis period.
+<period_end>{PERIOD_END}</period_end>: Defines the ending date for the analysis period.
+<interval>{INTERVAL}</interval>: Specifies the time interval of the data (e.g., daily, hourly).
+<market_event_dates>{MARKET_EVENT_DATES}</market_event_dates>: This contains a list of dates that correspond to significant market-wide upturns or downturns within the analysis period.  *This data should be used to contextualize your analysis and understand if major market movements influence the indicator's behavior or predictive capabilities.*
 
 Analysis Steps within <detailed_examination>:
 

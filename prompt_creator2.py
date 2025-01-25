@@ -1,4 +1,4 @@
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any, Tuple, Union
 import json
 from datetime import datetime
 from pathlib import Path
@@ -38,9 +38,33 @@ def validate_date_range(start_date: str, end_date: str, max_months: int) -> bool
         print(f"Error parsing dates: {e}")
         return False
 
-def process_txtfile(txtfile):
+def process_txtfile(txtfile: str, model: str) -> Union[str, Tuple[str, str]]:
+    """
+    Process the prompt file based on the model type.
+    For Claude and O1-mini, split into user and system prompts.
+    For Gemini models, return the entire content.
+    """
     with open(txtfile, 'r') as file:
         content = file.read()
+
+    # For Claude and O1-mini models, split the prompts
+    if model in ["claude-sonnet-3.5", "o1-mini"]:
+        # Split content at the delimiter
+        parts = content.split("!@#$")
+        if len(parts) != 2:
+            raise ValueError(f"Invalid prompt format in {txtfile}. Expected USER PROMPT and SYSTEM PROMPT sections separated by !@#$")
+        
+        # Extract user prompt and system prompt
+        user_prompt = parts[0].strip()
+        system_prompt = parts[1].strip()
+        
+        # Remove the labels if they exist
+        user_prompt = user_prompt.replace("USER PROMPT:", "").strip()
+        system_prompt = system_prompt.replace("SYSTEM PROMPT:", "").strip()
+        
+        return user_prompt, system_prompt
+    
+    # For Gemini models, return the content as is
     return content
 
 def calculate_max_months(model_context_window: int, indicator: str, prompt: str) -> int:
@@ -100,7 +124,31 @@ def get_context_window(model_name: str) -> int:
     
     return context_windows.get(model_name, 8192)  # Default to 8192 if model not found
 
-def collect_data_for_period(ticker: str, indicator: str, start_date: str, end_date: str) -> Tuple[Dict, Dict]:
+def collect_market_data():
+    # TODO
+    print()
+
+def collect_economic_data() -> Dict:
+    """Collect all market event data from Economic_EVENTS folder."""
+    economic_files = [
+        "cpi.json", "durables.json", "federal_funds_rate.json", 
+        "gdp.json", "inflation.json", "nonfarm_payroll.json",
+        "retail_sales.json", "treasury_yield.json", "unemployment.json"
+    ]
+    
+    economic_data = {}
+    for filename in economic_files:
+        try:
+            with open(Path("Economic_EVENTS") / filename, 'r') as f:
+                # Use the filename without .json as the key
+                key = filename.replace('.json', '')
+                economic_data[key] = json.load(f)
+        except FileNotFoundError:
+            print(f"Warning: No market data found for {filename}")
+    
+    return economic_data
+
+def collect_data_for_period(ticker: str, indicator: str, start_date: str, end_date: str, include_econ_events: bool = False) -> Union[Tuple[Dict, Dict], Tuple[Dict, Dict, Dict]]:
     """
     Collect stock and indicator data for the specified period.
     
@@ -148,34 +196,69 @@ def collect_data_for_period(ticker: str, indicator: str, start_date: str, end_da
     
     return combined_stock_data, combined_indicator_data
 
-def create_filled_prompt(ticker: str, indicator: str, start_date: str, end_date: str, prompt_path: str) -> str:
+def create_filled_prompt(ticker: str, indicator: str, start_date: str, end_date: str, model: str, prompt: Union[str, Tuple[str, str]], include_econ_events: bool = False) -> Union[str, Tuple[str, str]]:
     """
     Create a prompt with the data filled in.
-    
-    Args:
-        ticker: Stock ticker symbol
-        indicator: Technical indicator name
-        start_date: Start date in YYYY_MM format
-        end_date: End date in YYYY_MM format 
-    
-    Returns:
-        str: Filled prompt template
+    For Claude and O1-mini models:
+        - Only fill data in user prompt
+        - Keep system prompt as is
+    For Gemini models:
+        - Fill data in single prompt
     """
     # Collect data for the period
-    stock_data, indicator_data = collect_data_for_period(ticker, indicator, start_date, end_date)
-    prompt = process_txtfile(prompt_path)
-    # Create the filled prompt
-    filled_prompt = prompt.format(
-        STOCK_DATA=json.dumps(stock_data, indent=2),
-        INDICATOR_DATA=json.dumps(indicator_data, indent=2),
-        TECH_INDICATOR=indicator,
-        TICKER=ticker,
-        PERIOD_START=start_date,
-        PERIOD_END=end_date,
-        INTERVAL="daily"  # You might want to make this configurable
-    )
+    if include_econ_events:
+        stock_data, indicator_data = collect_data_for_period(
+            ticker, indicator, start_date, end_date, include_econ_events=True
+        )
+        econ_data = collect_economic_data()
+    else:
+        # When include_econ_events is False, only unpack two values
+        stock_data, indicator_data = collect_data_for_period(
+            ticker, indicator, start_date, end_date, include_econ_events=False
+        )
     
-    return filled_prompt
+    # Create format dictionary
+    format_dict = {
+        "STOCK_DATA": json.dumps(stock_data, indent=2),
+        "INDICATOR_DATA": json.dumps(indicator_data, indent=2),
+        "TECH_INDICATOR": indicator,
+        "TICKER": ticker,
+        "PERIOD_START": start_date,
+        "PERIOD_END": end_date,
+        "INTERVAL": "daily"
+    }
+    
+    # Add market data if included - add both key variations
+    if include_econ_events:
+        econ_data_json = json.dumps(econ_data, indent=2)
+        format_dict["MARKET_DATA"] = econ_data_json
+        format_dict["MARKET_CONTEXT_DATA"] = econ_data_json  # Add alternative key name
+    else:
+        # Add empty values for market data placeholders to avoid KeyError
+        format_dict["MARKET_DATA"] = "{}"
+        format_dict["MARKET_CONTEXT_DATA"] = "{}"
+    
+    # Handle different prompt types based on model
+    if model in ["claude-sonnet-3.5", "o1-mini"]:
+        user_prompt, system_prompt = prompt
+        # Only fill data in user prompt, leave system prompt as is
+        filled_user_prompt = user_prompt.format(**format_dict)
+        # Return tuple of filled user prompt and unchanged system prompt
+        return filled_user_prompt, system_prompt
+    else:
+        # For Gemini models
+        return prompt.format(**format_dict)
+
+def str2bool(v):
+    """Convert string to boolean for argparse"""
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 def main():
     tech_indicators = [
@@ -188,33 +271,52 @@ def main():
     "dema", "wma", "ema", "sma"
     ]
     
-    #claude sonnet 3.5 for nonreasoning.txt
-    #reasoning.txt for o1 mini
-    #gemini-exp-1206for google_nonreasoning.txt
-    #gemini-2.0-flash-thinking-exp-01-21 for google_reasoning.txt
+    #claude sonnet 3.5 for nonreasoning.txt (system, user)
+    #reasoning.txt for o1 mini (system, user)
+    #gemini-exp-1206for google_nonreasoning.txt (1 prompt only)
+    #gemini-2.0-flash-thinking-exp-01-21 for google_reasoning.txt (1 prompt only)
     models = ["claude-sonnet-3.5", "gemini-exp-1206", "gemini-2.0-flash-thinking-exp-01-21"]
 
     parser = argparse.ArgumentParser(description="Input model, ticker, technical indicator, and path to prompt")
     parser.add_argument("--model", type=str, required=True, help="The model to use. Options are: " + ", ".join(models))
     parser.add_argument("--ticker", type=str, required=True, help="The stock ticker to analyze")
     parser.add_argument("--indicator", type=str, required=True, help="The technical indicator to evaluate. Options are: " + ", ".join(tech_indicators))
+    parser.add_argument("--include_econ_events", type=str2bool, required=True, help="Indicates if market events should be included in the analysis")
     args = parser.parse_args()
 
     if args.model == "claude-sonnet-3.5":
-        prompt_path = "prompts/nonreasoning.txt"
+        if args.include_econ_events:
+            prompt_path = "prompts/nonreasoning_market.txt"
+            print(1)
+        else:
+            print(2)
+            prompt_path = "prompts/nonreasoning.txt"
+
     elif args.model == "o1-mini":
-        prompt_path = "prompts/reasoning.txt"
+        if args.include_econ_events:
+            prompt_path = "prompts/reasoning_market.txt"
+        else:
+            prompt_path = "prompts/reasoning.txt"
+
     elif args.model == "gemini-exp-1206":
-        prompt_path = "prompts/google_nonreasoning.txt"
+        if args.include_econ_events:
+            prompt_path = "prompts/google_nonreasoning_market.txt"
+        else:
+            prompt_path = "prompts/google_nonreasoning.txt"
+
     elif args.model == "gemini-2.0-flash-thinking-exp-01-21":
-        prompt_path = "prompts/google_reasoning.txt"
+        if args.include_econ_events:
+            prompt_path = "prompts/google_reasoning_market.txt"
+        else:
+            prompt_path = "prompts/google_reasoning.txt"
+            
     else:
         print("Invalid model")
         exit(1)
 
 
-    # Read the prompt template first
-    prompt = process_txtfile(prompt_path)
+    # Read and process the prompt template
+    prompt = process_txtfile(prompt_path, args.model)
 
     # Calculate max months based on model's context window
     context_window = get_context_window(args.model)
@@ -247,25 +349,46 @@ def main():
         indicator=args.indicator,
         start_date=args.start_date,
         end_date=args.end_date,
-        prompt_path=args.prompt_path
+        model=args.model,
+        prompt=prompt,
+        include_econ_events=args.include_econ_events
     )
     
-    # Print the length of the prompt (helpful for debugging)
-    print(f"\nPrompt length (chars): {len(filled_prompt)}")
-    print(f"Approximate tokens: {len(filled_prompt) // 4}")
-    
-    # Extract just the prompt template name from the path
-    prompt_template_name = Path(args.prompt_path).stem  # This gets filename without extension
-    
+    # Create output directory
     output_dir = Path("prompts_filled")
     output_dir.mkdir(exist_ok=True)
     
-    # Create a cleaner output filename
-    output_file = output_dir / f"{args.ticker}_{args.indicator}_{args.start_date}_{args.end_date}_{prompt_template_name}.txt"
-    with open(output_file, 'w') as f:
-        f.write(filled_prompt)
-    
-    print(f"\nGenerated prompt saved to: {output_file}")
+    # Save prompts based on model type
+    prompt_template_name = Path(prompt_path).stem
+    if args.model in ["claude-sonnet-3.5", "o1-mini"]:
+        filled_user_prompt, filled_system_prompt = filled_prompt
+        
+        # Save user prompt
+        user_file = output_dir / f"{args.ticker}_{args.indicator}_{args.start_date}_{args.end_date}_{prompt_template_name}_user.txt"
+        with open(user_file, 'w') as f:
+            f.write(filled_user_prompt)
+            
+        # Save system prompt
+        system_file = output_dir / f"{args.ticker}_{args.indicator}_{args.start_date}_{args.end_date}_{prompt_template_name}_system.txt"
+        with open(system_file, 'w') as f:
+            f.write(filled_system_prompt)
+            
+        print(f"\nGenerated prompts saved to:")
+        print(f"User prompt: {user_file}")
+        print(f"System prompt: {system_file}")
+    else:
+        # For Gemini models, save single prompt
+        output_file = output_dir / f"{args.ticker}_{args.indicator}_{args.start_date}_{args.end_date}_{prompt_template_name}.txt"
+        with open(output_file, 'w') as f:
+            f.write(filled_prompt)
+        print(f"\nGenerated prompt saved to: {output_file}")
 
 if __name__ == "__main__":
+    '''
+    #
+    python prompt_creator2.py --model claude-sonnet-3.5 --ticker NVDA --indicator bop --include_econ_events False
+    python prompt_creator2.py --model o1-mini --ticker NVDA --indicator bop --include_econ_events False
+    python prompt_creator2.py --model gemini-exp-1206 --ticker NVDA --indicator bop --include_econ_events False
+    python prompt_creator2.py --model gemini-2.0-flash-thinking-exp-01-21 --ticker NVDA --indicator bop --include_econ_events False
+   '''
     main()

@@ -3,43 +3,43 @@ You are an advanced AI-powered financial analyst with a mission to conduct an ex
 
 You will be provided with the following data:
 
-<stock_data>{{STOCK_DATA}}</stock_data>
+<stock_data>{STOCK_DATA}</stock_data>
 
 Candle data (Open, High, Low, Close, Volume) for the specified ticker and time period.
 
-<indicator_data>{{INDICATOR_DATA}}</indicator_data>
+<indicator_data>{INDICATOR_DATA}</indicator_data>
 
 Calculated values for the specified technical indicator.
 
-<tech_indicator>{{TECH_INDICATOR}}</tech_indicator>
+<tech_indicator>{TECH_INDICATOR}</tech_indicator>
 
 The name of the technical indicator being analyzed.
 
-<ticker>{{TICKER}}</ticker>
+<ticker>{TICKER}</ticker>
 
 The stock ticker symbol.
 
-<period_start>{{PERIOD_START}}</period_start>
+<period_start>{PERIOD_START}</period_start>
 
 The starting date of the analysis period.
 
-<period_end>{{PERIOD_END}}</period_end>
+<period_end>{PERIOD_END}</period_end>
 
 The ending date of the analysis period.
 
-<interval>{{INTERVAL}}</interval>
+<interval>{INTERVAL}</interval>
 
 The time interval of the data (e.g., daily, hourly).
 
-<market_upturn_dates>{{MARKET_UPTURN_DATES}}</market_upturn_dates>
+<market_upturn_dates>{MARKET_UPTURN_DATES}</market_upturn_dates>
 
 Dates corresponding to significant market-wide upturns within the analysis period. These dates represent times of substantial positive market movement across a broad range of stocks and indices.
 
-<market_downturn_dates>{{MARKET_DOWNTURN_DATES}}</market_downturn_dates>
+<market_downturn_dates>{MARKET_DOWNTURN_DATES}</market_downturn_dates>
 
 Dates corresponding to significant market-wide downturns within the analysis period. These dates represent times of substantial negative market movement across a broad range of stocks and indices.
 
-Your task is to perform a comprehensive and methodical examination of how <tech_indicator>{{TECH_INDICATOR}}</tech_indicator> may influence or predict <ticker>{{TICKER}}</ticker> stock price movements within the given period, while also considering the context of major market upturns and downturns. Think beyond conventional methods to identify potentially groundbreaking or subtle relationships and patterns, taking into account how market-wide events might amplify, diminish, or otherwise alter the indicator's typical behavior.
+Your task is to perform a comprehensive and methodical examination of how <tech_indicator>{TECH_INDICATOR}</tech_indicator> may influence or predict <ticker>{TICKER}</ticker> stock price movements within the given period, while also considering the context of major market upturns and downturns. Think beyond conventional methods to identify potentially groundbreaking or subtle relationships and patterns, taking into account how market-wide events might amplify, diminish, or otherwise alter the indicator's typical behavior.
 
 Conduct your analysis by following these steps:
 
@@ -90,7 +90,7 @@ Here is the structure for your response:
 </detailed_examination>
 
 <summary>
-[A concise summary of your most significant findings and insights derived from the detailed examination. Highlight the potential applications and limitations of the technical indicator for predicting <ticker>{{TICKER}}</ticker> price movements based solely on the analyzed data, especially considering the influence of market upturn and downturn events.]
+[A concise summary of your most significant findings and insights derived from the detailed examination. Highlight the potential applications and limitations of the technical indicator for predicting <ticker>{TICKER}</ticker> price movements based solely on the analyzed data, especially considering the influence of market upturn and downturn events.]
 
 </summary>
 <disclaimer>
